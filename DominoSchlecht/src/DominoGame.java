@@ -1,20 +1,21 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /*
  * Diese Klasse verwaltet ein Domino Game
  * Sie enthält einige elementare Fehler und Verletzungen der Namenskonventionen
  */
-public class DominoGame extends RoundRobinGame {
+public class DominoGame {
     
-	private IPlayer[] players;
-	private List<Domino> heap_of_Domino;
-	private List<Domino>[] players_dominoes;
-	private Domino table;
-	private int istDran;
+	public IPlayer[] players;
+	public List<Domino> heap_of_Domino;
+	public List<Domino>[] players_dominoes;
+	public Domino table;
+	public int istDran;
 
-	@Override
-	protected int[] getResult() {
+	
+	public int[] getResult() {
 		int[] result = new int[players.length];
 		for (int i = 0; i < players.length; i++) {
 			result[i] = score(i);
@@ -22,7 +23,7 @@ public class DominoGame extends RoundRobinGame {
 		return result;
 	}
 
-	private int score(int i) {
+	public int score(int i) {
 		int score = 0;
 		for (Domino domino : players_dominoes[i]) {
 			score += domino.getLinks() + domino.getRechts();
@@ -30,8 +31,8 @@ public class DominoGame extends RoundRobinGame {
 		return score;
 	}
 
-	@Override
-	protected void init(IPlayer[] players) {
+
+	public void init(IPlayer[] players) {
 		this.players = players;
 		heap_of_Domino = new ArrayList<Domino>();
 		for (int i = 0; i < 5; i++) {
@@ -39,11 +40,12 @@ public class DominoGame extends RoundRobinGame {
 				heap_of_Domino.add(new Domino(i, j));
 			}
 		}
+		Collections.shuffle(heap_of_Domino);
 		distributeHeap();
 	}
 
 	@SuppressWarnings("unchecked")
-	private void distributeHeap() {
+	public void distributeHeap() {
 		players_dominoes = new List[players.length];
 		for (int player = 0; player < this.players.length; player++) {
 			players_dominoes[player] = new ArrayList<Domino>();
@@ -55,11 +57,11 @@ public class DominoGame extends RoundRobinGame {
 		table = drawDomino();
 	}
 
-	private void DrawDomino(int player) {
+	public void DrawDomino(int player) {
 		players_dominoes[player].add(drawDomino());
 	}
 
-	private Domino drawDomino() {
+	public Domino drawDomino() {
 		if (!(heap_of_Domino.size()>0)) {
 			Domino first = heap_of_Domino.get(0);
 			heap_of_Domino.remove(0);
@@ -68,8 +70,8 @@ public class DominoGame extends RoundRobinGame {
 		return null;
 	}
 
-	@Override
-	protected void execute(int x) {
+	
+	public void execute(int x) {
 		this.istDran = x;
 		System.out.println("Anlegemöglichkeit: " + table);
 		players[x].currentStatus("Ihre Steine: " + players_dominoes[x].toString());
@@ -86,7 +88,7 @@ public class DominoGame extends RoundRobinGame {
 		playerChoseMove(joinMoves);
 	}
 
-	private void playerChoseMove(List<Domino> joinMoves) {
+	public void playerChoseMove(List<Domino> joinMoves) {
 		String[] stringMoves = movesAsString(joinMoves);
 		int MoveSelected = players[istDran].selectMove(stringMoves);
 		if (MoveSelected < joinMoves.size()) {
@@ -96,14 +98,14 @@ public class DominoGame extends RoundRobinGame {
 		}
 	}
 
-	private void forceDraw() {
+	public void forceDraw() {
 		System.out.println("Keine Anlegemöglichkeit");
 		if (!heap_of_Domino.isEmpty()) {
 			players_dominoes[istDran].add(drawDomino());
 		}
 	}
 
-	private void joinDomino(Domino domino) {
+	public void joinDomino(Domino domino) {
 		players_dominoes[istDran].remove(domino);
 		if (table.getRechts() == domino.getLinks() && table.getLinks() == domino.getRechts()) {
 			if (players[istDran].selectMove(new String[] { "rechts anlegen", "links anlegen" }) == 1) {
@@ -118,7 +120,7 @@ public class DominoGame extends RoundRobinGame {
 		}
 	}
 
-	private String[] movesAsString(List<Domino> joinMoves) {
+	public String[] movesAsString(List<Domino> joinMoves) {
 		List<String> stringMoves = new ArrayList<>();
 		for (Domino domino : joinMoves) {
 			stringMoves.add(domino.toString());
@@ -130,16 +132,15 @@ public class DominoGame extends RoundRobinGame {
 		return stringMoves.toArray(new String[stringMoves.size()]);
 	}
 
-	@Override
-	protected boolean gameOver() {
-		boolean gameOver = playerFinished() || heap_of_Domino.isEmpty() && noMoreMoves();
+	public boolean gameOver() {
+		boolean gameOver = playerFinished() || heap_of_Domino.size()==0 && noMoreMoves();
 		if (gameOver) {
 			printDominoes();
 		}
 		return gameOver;
 	}
 
-	private boolean playerFinished() {
+	public boolean playerFinished() {
 		boolean finished = false;
 		for (int i = 0; i < players.length; i++) {
 			if (players_dominoes[i].isEmpty()) {
@@ -149,14 +150,14 @@ public class DominoGame extends RoundRobinGame {
 		return finished;
 	}
 
-	private void printDominoes() {
+	public void printDominoes() {
 		System.out.println("Spielende");
 		for (int i = 0; i < players.length; i++) {
 			System.out.println(players[i].getName() + ": " + players_dominoes[i]);
 		}
 	}
 
-	private boolean noMoreMoves() {
+	public boolean noMoreMoves() {
 		for (int i = 0; i < players.length; i++) {
 			for (Domino domino : players_dominoes[i]) {
 				if (table.getLinks() == domino.getRechts() || table.getRechts() == domino.getLinks()) {
@@ -164,6 +165,16 @@ public class DominoGame extends RoundRobinGame {
 				}
 			}
 		}
-		return heap_of_Domino.isEmpty();
+		return heap_of_Domino.size()==0;
+	}
+
+	public int[] play(IPlayer[] players) {
+		init(players);
+		int istDran=0;
+		while (!gameOver()) {
+			execute(istDran);
+			istDran=(istDran+1)%players.length;
+		}
+		return getResult();
 	}
 }

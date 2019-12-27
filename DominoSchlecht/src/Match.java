@@ -2,10 +2,10 @@
 public class Match {
 	private final IPlayer[] players;
 	private final UserDialog dialog = new UserDialog();
-	private final IGame game;
+	private final DominoGame game;
 	int[] scores;
 
-	public Match(IPlayer[] players, IGame game) {
+	public Match(IPlayer[] players, DominoGame game) {
 		super();
 		this.players = players;
 		this.game = game;
