@@ -1,3 +1,4 @@
+package de.nordakademie.domino;
 
 public abstract class AbstractPlayer implements IPlayer {
  

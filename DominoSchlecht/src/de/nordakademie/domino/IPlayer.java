@@ -1,3 +1,4 @@
+package de.nordakademie.domino;
 public interface IPlayer {
 	String getName();
 

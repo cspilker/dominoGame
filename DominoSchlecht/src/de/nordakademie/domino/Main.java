@@ -1,3 +1,4 @@
+package de.nordakademie.domino;
 
 public class Main {
 	public void startDomino() {

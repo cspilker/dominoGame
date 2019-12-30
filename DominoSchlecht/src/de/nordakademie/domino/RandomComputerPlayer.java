@@ -1,3 +1,4 @@
+package de.nordakademie.domino;
 import java.util.Random;
 
 public class RandomComputerPlayer extends ComputerPlayer {

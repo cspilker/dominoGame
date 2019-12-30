@@ -1,3 +1,4 @@
+package de.nordakademie.domino;
 public class HumanPlayer extends AbstractPlayer {
 
 	private UserDialog dialog = new UserDialog();

@@ -1,3 +1,4 @@
+package de.nordakademie.domino;
 public class Domino {
 	private int left, right;
 

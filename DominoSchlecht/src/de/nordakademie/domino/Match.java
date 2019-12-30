@@ -1,3 +1,4 @@
+package de.nordakademie.domino;
 
 public class Match {
 	private final IPlayer[] players;
@@ -9,9 +10,6 @@ public class Match {
 		super();
 		this.players = players;
 		this.game = game;
-		if (players.length != 2 || players[0] == null || players[1] == null || game == null) {
-			throw new IllegalArgumentException();
-		}
 		scores = new int[players.length];
 	}
 
