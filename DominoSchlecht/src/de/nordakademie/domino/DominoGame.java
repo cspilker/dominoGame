@@ -11,11 +11,11 @@ public class DominoGame {
     //alle Exemplarvariablen sind private! Verletzung des Geheimnisprinzips. Schwerer Fehler!
 	private IPlayer[] players;
 	//heap_of_Domino entspricht nicht den Namenskonventionen: CamelCase
-	private List<Domino> heapOfDominos;
+	private List<IDomino> heapOfDominos;
 	//players_dominoes entspricht nicht den Namenskonventionen: CamelCase
-	private List<Domino>[] playersDominos;
+	private List<IDomino>[] playersDominos;
 	//table: Name nicht unbedingt sprechend: es ist doch ein Domino
-	private Domino tableDomino;
+	private IDomino tableDomino;
 	//istDran ist Deusch. Ausserdem erwartet man eine boolean Varaible
 	private int indexOfCurrentPlayer;
 
@@ -31,8 +31,8 @@ public class DominoGame {
 
 	private int score(int i) {
 		int score = 0;
-		for (Domino domino : playersDominos[i]) {
-			score += domino.getLinks() + domino.getRechts();
+		for (IDomino domino : playersDominos[i]) {
+			score += domino.value();
 		}
 		return score;
 	}
@@ -44,7 +44,7 @@ public class DominoGame {
 		heapOfDominos = new ArrayList<>();
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 5; j++) {
-				heapOfDominos.add(new Domino(i, j));
+				heapOfDominos.add(new BieneMajaDomino(i, j));
 			}
 		}
 		Collections.shuffle(heapOfDominos);
@@ -71,7 +71,7 @@ public class DominoGame {
 
 	//Collection Framework richtig nutzen: remove gibt das gelöschte Objekt zurück
 	//Collection Framework richtig nutzen: statt size()>0 !isEmpty() nutzen
-	private Domino drawDomino() {
+	private IDomino drawDomino() {
 		if (!heapOfDominos.isEmpty()) {
 			return heapOfDominos.remove(0);
 		}
@@ -81,13 +81,13 @@ public class DominoGame {
 	//Variablenname x ist nicht sprechend. Kommentar wäre nötig! also Variable sprechend benennen
 	//Parameter ist aber auch überflüssig!
 	private void execute() {
-		System.out.println("Anlegemöglichkeit: " + tableDomino);
+		System.out.println("Anlegem�glichkeit: " + tableDomino);
 		players[indexOfCurrentPlayer].currentStatus("Ihre Steine: " + playersDominos[indexOfCurrentPlayer].toString());
 		//Der Typ Domino kann durch Type Inference ermittelt werden
-		List<Domino> joinMoves = new ArrayList<>();
-		for (Domino domino : playersDominos[indexOfCurrentPlayer]) {
-			if (tableDomino.getLinks() == domino.getRechts() || tableDomino.getRechts() == domino.getLinks()) {
-				joinMoves.add(domino);
+		List<IDomino> joinMoves = new ArrayList<>();
+		for (IDomino domino : playersDominos[indexOfCurrentPlayer]) {
+			if (tableDomino.isJoinableLeft(domino) || tableDomino.isJoinableRight(domino)) {
+				joinMoves.add(domino);                
 			}
 		}
 		//CollectionFramework richtig nutzen: statt size()==0  isEmpty() nutzen
@@ -98,7 +98,7 @@ public class DominoGame {
 		playerChoseMove(joinMoves);
 	}
 
-	private void playerChoseMove(List<Domino> joinMoves) {
+	private void playerChoseMove(List<IDomino> joinMoves) {
 		String[] stringMoves = movesAsString(joinMoves);
 		//Namenskonventionen verletzt: CamelCase
 		int moveSelected = players[indexOfCurrentPlayer].selectMove(stringMoves);
@@ -110,31 +110,32 @@ public class DominoGame {
 	}
 
 	private void forceDraw() {
-		System.out.println("Keine Anlegemöglichkeit");
+		System.out.println("Keine Anlegem�glichkeit");
 		if (!heapOfDominos.isEmpty()) {
 			playersDominos[indexOfCurrentPlayer].add(drawDomino());
 		}
 	}
 
-	private void joinDomino(Domino domino) {
+	private void joinDomino(IDomino domino) {
 		playersDominos[indexOfCurrentPlayer].remove(domino);
-		//Geschachteltes if statement nicht nötig. mit && arbeiten
-		if (tableDomino.getRechts() == domino.getLinks() && tableDomino.getLinks() == domino.getRechts()&& 
+		//Geschachteltes if statement nicht n�tig. mit && arbeiten
+		if (tableDomino.isJoinableRight(domino) && tableDomino.isJoinableLeft(domino) && 
 				players[indexOfCurrentPlayer].selectMove(new String[] { "rechts anlegen", "links anlegen" }) == 1) {
-				tableDomino.setLeft(domino.getLinks());
+				tableDomino.leftJoin(domino);
 				return;
 		}
 		
-		if (tableDomino.getRechts() == domino.getLinks()) {
-			tableDomino.setRight(domino.getRechts());
+		if (tableDomino.isJoinableRight(domino)) {
+			tableDomino.rightJoin(domino);
 		} else {
-			tableDomino.setLeft(domino.getLinks());
+			tableDomino.leftJoin(domino);
 		}
 	}
 
-	private String[] movesAsString(List<Domino> joinMoves) {
+	
+	private String[] movesAsString(List<IDomino> joinMoves) {
 		List<String> stringMoves = new ArrayList<>();
-		for (Domino domino : joinMoves) {
+		for (IDomino domino : joinMoves) {
 			stringMoves.add(domino.toString());
 		}
 		if (!heapOfDominos.isEmpty()) {
@@ -172,8 +173,8 @@ public class DominoGame {
 
 	private boolean noMoreMoves() {
 		for (int i = 0; i < players.length; i++) {
-			for (Domino domino : playersDominos[i]) {
-				if (tableDomino.getLinks() == domino.getRechts() || tableDomino.getRechts() == domino.getLinks()) {
+			for (IDomino domino : playersDominos[i]) {
+				if (tableDomino.isJoinableLeft(domino) || tableDomino.isJoinableRight(domino) ) {
 					return false;
 				}
 			}

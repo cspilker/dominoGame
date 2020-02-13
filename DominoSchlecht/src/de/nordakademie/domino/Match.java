@@ -20,7 +20,7 @@ public class Match {
 			printScore();
 			finished = dialog.getUserInput("Weitere Runde? ", "Nein", "Ja") == 0;
 		}
-		System.out.println("Tschüß");
+		System.out.println("Tsch�");
 	}
 
 	private void printScore() {

@@ -8,7 +8,7 @@ public class HumanPlayer extends AbstractPlayer {
 	}
 
 	public int selectMove(String[] possibleMoves) {
-		return dialog.getUserInput("AuswahlmÃ¶glichkeiten:\n", possibleMoves);
+		return dialog.getUserInput("Auswahlmöglichkeiten:\n", possibleMoves);
 		
 	}
 
