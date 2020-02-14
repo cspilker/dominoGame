@@ -1,7 +1,7 @@
 package de.nordakademie.domino;
 
 public abstract class AbstractPlayer implements IPlayer {
- 
+
 	private final String name;
 
 	public String getName() {
@@ -13,6 +13,4 @@ public abstract class AbstractPlayer implements IPlayer {
 		this.name = name;
 	}
 
-
-	
 }
