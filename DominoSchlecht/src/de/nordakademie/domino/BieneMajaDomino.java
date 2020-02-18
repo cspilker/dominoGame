@@ -1,5 +1,6 @@
 package de.nordakademie.domino;
 
+
 public class BieneMajaDomino implements IDomino {
 
 	private final int left, right;
@@ -61,5 +62,4 @@ public class BieneMajaDomino implements IDomino {
 			return null;
 		}
 	}
-
 }

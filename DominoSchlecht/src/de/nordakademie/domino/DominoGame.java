@@ -3,30 +3,25 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/*
- * Diese Klasse verwaltet ein Domino Game
- * Sie enthält einige elementare Fehler und Verletzungen der Namenskonventionen
- */
+
 public class DominoGame {
-    //alle Exemplarvariablen sind private! Verletzung des Geheimnisprinzips. Schwerer Fehler!
+    
+	private int indexOfCurrentPlayer;
+	
 	private IPlayer[] players;
 	
 	private List<IDomino> heapOfDominos;
-	
 	private List<IDomino>[] playersDominos;
-	//table: Name nicht unbedingt sprechend: es ist doch ein Domino
 	private IDomino tableDomino;
-	//istDran ist Deusch. Ausserdem erwartet man eine boolean Varaible
-	private int indexOfCurrentPlayer;
 	
 	private IDominoPool pool;
+	
 	
 	public DominoGame(IDominoPool pool) {
 		this.pool = pool;
 	}
 	
-	//Alle Methoden sind public. Geheimnisprinzip verletzt. Nur play und der Konstruktor müssen public sein. 
-	//Schwerer Fehler
+	
 	private int[] getResult() {
 		int[] result = new int[players.length];
 		for (int i = 0; i < players.length; i++) {
@@ -35,6 +30,7 @@ public class DominoGame {
 		return result;
 	}
 
+	
 	private int score(int i) {
 		int score = 0;
 		for (IDomino domino : playersDominos[i]) {

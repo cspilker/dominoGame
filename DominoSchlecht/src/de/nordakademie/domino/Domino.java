@@ -52,5 +52,4 @@ public class Domino implements IDomino {
 			return null;
 		}
 	}
-
 }

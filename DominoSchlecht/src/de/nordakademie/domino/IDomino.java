@@ -1,5 +1,6 @@
 package de.nordakademie.domino;
 
+
 public interface IDomino {
 	
 	int value();
