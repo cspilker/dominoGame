@@ -10,15 +10,21 @@ import java.util.List;
 public class DominoGame {
     //alle Exemplarvariablen sind private! Verletzung des Geheimnisprinzips. Schwerer Fehler!
 	private IPlayer[] players;
-	//heap_of_Domino entspricht nicht den Namenskonventionen: CamelCase
+	
 	private List<IDomino> heapOfDominos;
-	//players_dominoes entspricht nicht den Namenskonventionen: CamelCase
+	
 	private List<IDomino>[] playersDominos;
 	//table: Name nicht unbedingt sprechend: es ist doch ein Domino
 	private IDomino tableDomino;
 	//istDran ist Deusch. Ausserdem erwartet man eine boolean Varaible
 	private int indexOfCurrentPlayer;
-
+	
+	private IDominoPool pool;
+	
+	public DominoGame(IDominoPool pool) {
+		this.pool = pool;
+	}
+	
 	//Alle Methoden sind public. Geheimnisprinzip verletzt. Nur play und der Konstruktor müssen public sein. 
 	//Schwerer Fehler
 	private int[] getResult() {
@@ -36,21 +42,18 @@ public class DominoGame {
 		}
 		return score;
 	}
-
+	
 
 	private void init(IPlayer[] players) {
 		this.players = players;
-		//Der Typ Domino kann durch Type Inference ermittelt werden
-		heapOfDominos = new ArrayList<>();
-		for (int i = 0; i < 5; i++) {
-			for (int j = 0; j < 5; j++) {
-				heapOfDominos.add(new BieneMajaDomino(i, j));
-			}
-		}
+		
+		heapOfDominos = pool.provideShuffledDominoHeap();
+		
 		Collections.shuffle(heapOfDominos);
 		distributeHeap();
 	}
 
+	
 	@SuppressWarnings("unchecked")
 	private void distributeHeap() {
 		playersDominos = new List[players.length];
